@@ -5,7 +5,7 @@ class PlayerController {
         try {
             mysql.getConnection((error, conn) => {
                 conn.query(
-                    `SELECT * FROM player_scores`,
+                    `SELECT CONCAT(Player_Name,":",Player_Score) AS "" FROM player_scores ORDER BY Player_Score DESC`,
                     (error, result, fields) => {
                         if (error) { return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
