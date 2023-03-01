@@ -28,7 +28,9 @@ class PlayerController {
                     `SELECT * FROM player_scores WHERE Player_Name = "${player}"`,
                     (error, result, fields) => {
                         if (error) { return res.status(500).send({ error: error }) }
-                        if (JSON.stringify(result) != '[]') {
+                        if ((JSON.stringify(result) != '[]')
+                            && 
+                            (parseFloat(JSON.stringify(result[0].Player_Score).slice(0, -1).slice(1 | 1)) < parseFloat(score))) {
                             conn.query(
                                 `UPDATE player_scores SET Player_Score = ${score} WHERE Player_Name = "${player}"`,
                                 (error, result, fields) => {
