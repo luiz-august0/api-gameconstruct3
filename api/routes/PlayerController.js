@@ -28,16 +28,18 @@ class PlayerController {
                     `SELECT * FROM player_scores WHERE Player_Name = "${player}"`,
                     (error, result, fields) => {
                         if (error) { return res.status(500).send({ error: error }) }
-                        if ((JSON.stringify(result) != '[]')
-                            && 
-                            (parseFloat(JSON.stringify(result[0].Player_Score).slice(0, -1).slice(1 | 1)) < parseFloat(score))) {
-                            conn.query(
-                                `UPDATE player_scores SET Player_Score = ${score} WHERE Player_Name = "${player}"`,
-                                (error, result, fields) => {
-                                    if (error) { return res.status(500).send({ error: error }) }
-                                    return res.status(201).json(result);
-                                }
-                            )
+                        if ((JSON.stringify(result) != '[]')) {
+                            if (parseFloat(JSON.stringify(result[0].Player_Score)) < parseFloat(score)) {
+                                conn.query(
+                                    `UPDATE player_scores SET Player_Score = ${score} WHERE Player_Name = "${player}"`,
+                                    (error, result, fields) => {
+                                        if (error) { return res.status(500).send({ error: error }) }
+                                        return res.status(201).json(result);
+                                    }
+                                )
+                            } else {
+                                return res.status(201).json(result);
+                            }
                         } else {
                             conn.query(
                                 `INSERT INTO player_scores VALUES("${player}", ${score})`,
