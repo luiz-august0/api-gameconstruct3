@@ -21,17 +21,19 @@ class PlayerController {
 
     async post(req, res) {
         const { player, score } = req.body;
+        let playerName = player.toString(); 
+        playerName = playerName.replaceAll("'", "");
 
         try {
             mysql.getConnection((error, conn) => {
                 conn.query(
-                    `SELECT * FROM player_scores WHERE Player_Name = "${player}"`,
+                    `SELECT * FROM player_scores WHERE Player_Name = '${playerName}'`,
                     (error, result, fields) => {
                         if (error) { return res.status(500).send({ error: error }) }
                         if ((JSON.stringify(result) != '[]')) {
                             if (parseFloat(JSON.stringify(result[0].Player_Score)) < parseFloat(score)) {
                                 conn.query(
-                                    `UPDATE player_scores SET Player_Score = ${score} WHERE Player_Name = "${player}"`,
+                                    `UPDATE player_scores SET Player_Score = ${score} WHERE Player_Name = '${playerName}'`,
                                     (error, result, fields) => {
                                         if (error) { return res.status(500).send({ error: error }) }
                                         return res.status(201).json(result);
@@ -42,7 +44,7 @@ class PlayerController {
                             }
                         } else {
                             conn.query(
-                                `INSERT INTO player_scores VALUES("${player}", ${score})`,
+                                `INSERT INTO player_scores VALUES('${playerName}', ${score})`,
                                 (error, result, fields) => {
                                     if (error) { return res.status(500).send({ error: error }) }
                                     return res.status(201).json(result);
