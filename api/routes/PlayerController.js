@@ -5,7 +5,7 @@ class PlayerController {
         try {
             mysql.getConnection((error, conn) => {
                 conn.query(
-                    `SELECT CONCAT(Player_Name,"- ",Player_Score) AS "" FROM player_scores ORDER BY Player_Score DESC`,
+                    `SELECT * FROM player_scores ORDER BY Player_Score DESC`,
                     (error, result, fields) => {
                         if (error) { return res.status(500).send({ error: error }) }
                         return res.status(201).json(result);
@@ -22,7 +22,6 @@ class PlayerController {
     async post(req, res) {
         const { player, score } = req.body;
         let playerName = player.toString(); 
-        playerName = playerName.replaceAll("'", "");
 
         try {
             mysql.getConnection((error, conn) => {
